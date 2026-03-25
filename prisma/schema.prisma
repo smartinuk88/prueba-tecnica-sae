@@ -11,10 +11,12 @@ generator client {
   importFileExtension    = "ts"
   moduleFormat           = "cjs"
   runtime                = "nodejs"
+  previewFeatures        = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [vector]
 }
 
 model Provincia {
@@ -68,4 +70,11 @@ model Cultivo {
   id       Int       @id @default(autoincrement())
   nombre   String    @unique
   recintos Recinto[]
+}
+
+model Movie {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String
+  embedding   Unsupported("vector")
 }

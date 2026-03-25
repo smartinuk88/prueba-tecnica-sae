@@ -41,6 +41,7 @@ Esta prueba técnica consiste en desarrollar una aplicación web con Next.js que
 3. **Levantar la base de datos PostgreSQL con PostGIS:**
 
    ```bash
+   docker compose build
    docker compose up -d
    ```
 4. **Ejecutar migraciones en la base de datos de desarrollo:**
@@ -75,6 +76,7 @@ Esta prueba técnica consiste en desarrollar una aplicación web con Next.js que
 La aplicación estará disponible en `http://localhost:3000`.
 
 ---
+
 
 ## 📝 Tareas a realizar
 
@@ -138,7 +140,6 @@ Crea una vista con un mapa de Leaflet que muestre las parcelas y recintos del us
 ---
 
 ### 4. Tests con Jest
-
 **Carpeta:** `/__tests__/`
 
 Crea al menos **3 tests** utilizando Jest (ya configurado en el proyecto).
@@ -157,6 +158,43 @@ pnpm run test
 # o
 npm run test
 ```
+
+---
+### 5. Filtros / Vector Search
+Elige entre la opción 5A o 5B y realiza solo una de las dos.
+
+#### 5A - Filtro de usuarios
+
+Crea un buscador de usuarios y un filtro que distinga entre usuarios que tienen parcelas y los que no.
+
+- Implementa un buscador en la ruta `/users` que permita buscar por `nombre` y `email`.
+- Añade un filtro en la misma ruta para mostrar únicamente los usuarios que tienen parcelas asociadas o los que no tienen ninguna.
+
+**Requisitos:**
+
+- El endpoint debe validar los parámetros de entrada.
+- Debes mostrar el número de parcelas que tiene cada usuario.
+
+#### 5B - Vector search de películas (embeddings + búsqueda semántica)
+
+Crea una búsqueda semántica de películas usando embeddings y pgvector:
+
+- Genera los embeddings de cada película de forma local usando [`@xenova/transformers`](https://www.npmjs.com/package/@xenova/transformers) (no dependas de APIs externas).
+- Inserta las películas y sus embeddings en la tabla `Movie` usando SQL raw y el tipo `vector` de pgvector ([raw queries en Prisma](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries)).
+- Crea un endpoint `/api/movie-search` que reciba un texto y devuelva el top N de películas más similares usando búsqueda vectorial (`embedding <=> query_vector`).
+- Implementa una vista `/movies` con un buscador: el usuario escribe una frase (por ejemplo, `a scary monster`) y se muestran las películas más relevantes según la búsqueda semántica.
+- Puedes revisar el `/src/types/xenova-transformers.d.ts` para guiarte un poco con la libreria `@xenova/transformers`
+
+**Requisitos:**
+
+- El endpoint debe validar los parámetros de entrada.
+- El buscador debe mostrar el título, descripción y el score de similitud de cada resultado.
+
+**Enlaces útiles:**
+- [Documentación de pgvector](https://github.com/pgvector/pgvector)
+- [Ejemplo de embeddings locales con Xenova](https://github.com/xenova/transformers.js)
+
+
 
 ---
 
