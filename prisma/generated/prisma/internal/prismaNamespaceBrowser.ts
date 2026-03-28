@@ -57,7 +57,8 @@ export const ModelName = {
   Parcela: 'Parcela',
   Recinto: 'Recinto',
   Cultivo: 'Cultivo',
-  Movie: 'Movie'
+  Movie: 'Movie',
+  Profile: 'Profile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -138,6 +139,15 @@ export const MovieScalarFieldEnum = {
 } as const
 
 export type MovieScalarFieldEnum = (typeof MovieScalarFieldEnum)[keyof typeof MovieScalarFieldEnum]
+
+
+export const ProfileScalarFieldEnum = {
+  id: 'id',
+  imagen: 'imagen',
+  usuarioId: 'usuarioId'
+} as const
+
+export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
 
 
 export const SortOrder = {

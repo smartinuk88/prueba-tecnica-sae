@@ -308,6 +308,40 @@ async function main() {
     ],
   });
 
+  //4b. PROFILES — one per usuario with avatar image from dicebear API
+  await prisma.profile.createMany({
+    data: [
+      {
+        usuarioId: 1,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=Carlos",
+      },
+      {
+        usuarioId: 2,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=Maria",
+      },
+      {
+        usuarioId: 3,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=Pedro",
+      },
+      {
+        usuarioId: 4,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=MariaS",
+      },
+      {
+        usuarioId: 5,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=Luis",
+      },
+      {
+        usuarioId: 6,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=Laura",
+      },
+      {
+        usuarioId: 7,
+        imagen: "https://api.dicebear.com/9.x/lorelei/svg?seed=Scott",
+      },
+    ],
+  });
+
   // 5. PARCELAS — raw SQL required for geometry
   // Parcela 1 — Carlos García (userId: 1), Murcia (municipioId: 1)
   await prisma.$executeRaw`

@@ -52,3 +52,8 @@ export type Cultivo = Prisma.CultivoModel
  * 
  */
 export type Movie = Prisma.MovieModel
+/**
+ * Model Profile
+ * 
+ */
+export type Profile = Prisma.ProfileModel
