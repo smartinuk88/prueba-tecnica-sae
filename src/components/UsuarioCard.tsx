@@ -1,15 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 type Props = {
   id: number;
   nombre: string;
   email: string;
+  imagen?: string;
   numeroParcelas: number;
 };
 
-function UsuarioCard({ id, nombre, email, numeroParcelas }: Props) {
+function UsuarioCard({ id, nombre, email, imagen, numeroParcelas }: Props) {
   const router = useRouter();
   return (
     <div
@@ -17,9 +19,19 @@ function UsuarioCard({ id, nombre, email, numeroParcelas }: Props) {
       className="cursor-pointer rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md hover:border-green-400 transition-all duration-200"
     >
       <div className="flex items-center gap-4 mb-4">
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-700 font-bold text-lg">
-          {nombre.charAt(0)}
-        </div>
+        {imagen ? (
+          <Image
+            src={imagen}
+            alt={`Foto de perfil de ${nombre}`}
+            width={48}
+            height={48}
+            className="rounded-full bg-green-100"
+          />
+        ) : (
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-700 font-bold text-lg">
+            {nombre.charAt(0)}
+          </div>
+        )}
         <div>
           <h2 className="font-semibold text-gray-900 text-lg">{nombre}</h2>
           <p className="text-gray-500 text-sm">{email}</p>

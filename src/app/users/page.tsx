@@ -7,6 +7,11 @@ async function UsersPage() {
       id: true,
       nombre: true,
       email: true,
+      profile: {
+        select: {
+          imagen: true,
+        },
+      },
       _count: {
         select: { parcelas: true },
       },
@@ -34,6 +39,7 @@ async function UsersPage() {
               id={usuario.id}
               nombre={usuario.nombre}
               email={usuario.email}
+              imagen={usuario.profile?.imagen}
               numeroParcelas={usuario._count.parcelas}
             />
           ))}
