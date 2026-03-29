@@ -1,5 +1,6 @@
 import UsuarioCard from "@/components/UsuarioCard";
 import { prisma } from "../../../prisma/prisma_client";
+import UsuarioSearch from "@/components/UsuarioSearch";
 
 async function UsersPage() {
   const usuarios = await prisma.usuario.findMany({
@@ -26,24 +27,10 @@ async function UsersPage() {
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-gray-900">Usuarios</h1>
           <p className="text-gray-500 mt-2">
-            {usuarios.length}{" "}
-            {usuarios.length === 1
-              ? "usuario registrado"
-              : "usuarios registrados"}
+            Plataforma de agricultura regenerativa
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {usuarios.map((usuario) => (
-            <UsuarioCard
-              key={usuario.id}
-              id={usuario.id}
-              nombre={usuario.nombre}
-              email={usuario.email}
-              imagen={usuario.profile?.imagen}
-              numeroParcelas={usuario._count.parcelas}
-            />
-          ))}
-        </div>
+        <UsuarioSearch initialUsuarios={usuarios} />
       </div>
     </main>
   );
