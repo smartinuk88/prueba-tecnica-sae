@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "../../../../prisma/prisma_client";
 import MapView from "@/components/MapView";
 import Image from "next/image";
+import Link from "next/link";
 
 type ParcelaRaw = {
   id: number;
@@ -97,12 +98,12 @@ async function UserMapPage({ params }: Props) {
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="mb-8">
-          <a
+          <Link
             className="text-green-600 hover:text-green-800 text-sm font-medium mb-4 inline-block"
             href="/users"
           >
             ← Volver a usuarios
-          </a>
+          </Link>
           <div className="flex items-center gap-4 mt-2">
             {usuario.profile?.imagen && (
               <Image

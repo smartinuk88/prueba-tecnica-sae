@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 
 type Props = {
@@ -15,12 +16,12 @@ export default function MapError({ error, reset }: Props) {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <a
+        <Link
           href="/users"
           className="text-green-600 hover:text-green-800 text-sm font-medium mb-8 inline-block"
         >
           ← Volver a usuarios
-        </a>
+        </Link>
         <div className="flex flex-col items-center justify-center py-32 text-center">
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-6">
             <span className="text-red-600 text-2xl">⚠️</span>
