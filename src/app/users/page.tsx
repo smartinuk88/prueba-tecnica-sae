@@ -1,4 +1,3 @@
-import UsuarioCard from "@/components/UsuarioCard";
 import { prisma } from "../../../prisma/prisma_client";
 import UsuarioSearch from "@/components/UsuarioSearch";
 
