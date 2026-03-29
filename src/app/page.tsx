@@ -1,9 +1,5 @@
-import styles from "./Home.module.scss";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <h1>¡Bienvenid@ a la prueba técnica para SAE - Esférico!</h1>
-    </main>
-  );
+  redirect("/users");
 }
