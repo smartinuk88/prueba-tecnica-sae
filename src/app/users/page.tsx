@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import { prisma } from "../../../prisma/prisma_client";
 import UsuarioSearch from "@/components/UsuarioSearch";
 
