@@ -1,279 +1,262 @@
-# Prueba Técnica - Esférico SAE
+# Prueba Técnica
 
-## 📋 Descripción
-
-Esta prueba técnica consiste en desarrollar una aplicación web con Next.js que permita visualizar usuarios y sus parcelas agrícolas en un mapa interactivo.
+Aplicación web desarrollada con Next.js que permite visualizar usuarios y sus parcelas agrícolas en un mapa interactivo. Construida como prueba técnica.
 
 ---
 
-## ⚠️ Notas importantes
+## Stack Técnico
 
-- **Si no da tiempo a completar todo**, prioriza las tareas que consideres más importantes. Preferimos ver menos funcionalidades bien implementadas que muchas a medias.
-- **Puedes utilizar herramientas de IA** (ChatGPT, Copilot, Claude, etc.) sin ningún problema. Sin embargo, ten en cuenta que posteriormente se realizará una entrevista técnica en la que se preguntará sobre el código desarrollado, por lo que es importante que entiendas todo lo que has implementado.
-- **Se valorará el uso de Git**: la forma en que estructuras los commits (mensajes claros y descriptivos) y las ramas que creas. Puedes usar GitFlow, trunk-based development o cualquier estrategia de branching que consideres apropiada.
+- **Framework:** Next.js 16 (App Router)
+- **Lenguaje:** TypeScript
+- **Base de datos:** PostgreSQL con extensión PostGIS
+- **ORM:** Prisma
+- **Mapa:** React Leaflet + OpenStreetMap
+- **Estilos:** Tailwind CSS v4
+- **Tests:** Jest + Testing Library
+- **Contenedor:** Docker + Docker Compose
+- **Control de versiones:** Git Flow
 
 ---
 
-## 🚀 Setup
+## Instalación y configuración
 
 ### Requisitos previos
 
-- Node.js (v20.9 o superior)
-- pnpm o npm
+- Node.js v20.9 o superior
+- npm
 - Docker y Docker Compose
 
-### Instalación
+### Pasos
 
-1. **Configurar variables de entorno:**
+1. **Clonar el repositorio:**
 
-   ```bash
-   cp env.development.example .env.development
-   cp env.test.example .env.test
-   ```
+```bash
+git clone <https://github.com/smartinuk88/prueba-tecnica-sae.git>
+cd <nombre-del-proyecto>
+```
 
-2. **Instalar dependencias:**
+2. **Configurar variables de entorno:**
 
-   ```bash
-   pnpm install
-   # o
-   npm install
-   ```
-3. **Levantar la base de datos PostgreSQL con PostGIS:**
+```bash
+cp env.development.example .env.development
+cp env.test.example .env.test
+```
 
-   ```bash
-   docker compose build
-   docker compose up -d
-   ```
-4. **Ejecutar migraciones en la base de datos de desarrollo:**
+3. **Instalar dependencias:**
 
-   ```bash
-   pnpm run prisma:migrate:dev
-   # o
-   npm run prisma:migrate:dev
-   ```
-5. **Ejecutar migraciones en la base de datos de test:**
+```bash
+npm install
+```
 
-   ```bash
-   pnpm run prisma:migrate:test
-   # o
-   npm run prisma:migrate:test
-   ```
-5. **Generar el cliente de Prisma:**
+4. **Iniciar la base de datos:**
 
-   ```bash
-   pnpm run prisma:generate
-   # o
-   npm run prisma:generate
-   ```
-6. **Iniciar el servidor de desarrollo:**
+```bash
+docker compose up -d
+```
 
-   ```bash
-   pnpm run dev
-   # o
-   npm run dev
-   ```
+5. **Ejecutar migraciones:**
+
+```bash
+npm run prisma:migrate:dev
+npm run prisma:migrate:test
+```
+
+6. **Generar el cliente de Prisma:**
+
+```bash
+npm run prisma:generate
+```
+
+7. **Poblar la base de datos:**
+
+```bash
+npx dotenv -e .env.development -- npx prisma db seed
+```
+
+8. **Iniciar el servidor de desarrollo:**
+
+```bash
+npm run dev
+```
 
 La aplicación estará disponible en `http://localhost:3000`.
 
----
-
-
-## 📝 Tareas a realizar
-
-### 1. Completar el script de seedeo
-
-**Archivo:** `/prisma/seed/seed.ts`
-
-Completa el script de seed para poblar la base de datos con datos de prueba. Deberás crear:
-
-- **Provincias y Municipios**
-- **Usuarios** (al menos 6 - 7 usuarios de ejemplo)
-- **Cultivos** (tipos de cultivo: trigo, maíz, olivo, etc.)
-- **Parcelas** con geometrías de polígonos (asociadas a usuarios y municipios)
-- **Recintos** dentro de las parcelas (asociados a cultivos)
-
-**Instrucciones:**
-
-- Para las tablas sin geometrías, usa el cliente de Prisma normalmente. Consulta la [documentación de CRUD](https://www.prisma.io/docs/orm/prisma-client/queries/crud).
-- Para insertar polígonos, usa raw queries con la función `ST_GeomFromGeoJSON` de PostGIS. Consulta la [documentación de raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries) y la [documentación de ST_GeomFromGeoJSON](https://postgis.net/docs/ST_GeomFromGeoJSON.html).
-- Puedes crear polígonos de prueba fácilmente con esta herramienta: [geojson.io](https://geojson.io/#map=5/39.25/-5.56)
-
-**Nota:** Los recintos deben estar geométricamente contenidos dentro de sus parcelas (existe un constraint que lo valida con `ST_Within`).
-
----
-
-### 2. Vista de listado de usuarios
-
-**Ruta:** `/users`
-
-Crea una vista que muestre un listado de usuarios en formato de tarjetas (cards).
-
-**Requisitos:**
-
-- Mostrar datos **no sensibles** de los usuarios (nombre, email, número de parcelas, etc.)
-- **NO mostrar** el password ni datos sensibles
-- Al hacer clic en una tarjeta, navegar a la vista del mapa del usuario (`/user/:id`)
-
-**Bonus (opcional):**
-
-- Crear un modelo `Profile` con relación 1:1 con `Usuario` que incluya un campo `imagen`
-- Renderizar la imagen del perfil en las tarjetas de usuario utilizando los componentes específicos para imágenes de NextJS
-
----
-
-### 3. Vista de mapa con parcelas y recintos
-
-**Ruta:** `/user/:id`
-
-Crea una vista con un mapa de Leaflet que muestre las parcelas y recintos del usuario.
-
-**Requisitos:**
-
-- Usar la librería [react-leaflet](https://react-leaflet.js.org/) para renderizar el mapa
-- Mostrar las **parcelas** del usuario como polígonos en el mapa
-- Mostrar los **recintos** dentro de cada parcela (con un color diferente para distinguirlos)
-- Al hacer **hover** sobre una parcela o recinto, mostrar información de la base de datos:
-  - **Parcela:** municipio, provincia, número de recintos
-  - **Recinto:** cultivo, fecha de siembra, fecha de cosecha
-- La información puede mostrarse dentro del mapa (tooltip/popup) o fuera (panel lateral), a tu elección
-
----
-
-### 4. Tests con Jest
-**Carpeta:** `/__tests__/`
-
-Crea al menos **3 tests** utilizando Jest (ya configurado en el proyecto).
-
-**Ejemplos de tests válidos:**
-
-- **Test de renderizado:** Verificar que la página de usuarios (`/users`) renderiza correctamente las tarjetas de usuario
-- **Test de navegación:** Comprobar que al hacer clic en una tarjeta de usuario se navega a la ruta correcta (`/user/:id`)
-- **Test de componente:** Verificar que el componente del mapa muestra el número correcto de parcelas y recintos, y que dichas parcelas y recintos solo pertenecen a dicho usuario y no a otro.
-- **Test de datos:** Verificar que los datos mostrados en las tarjetas no incluyen información sensible
-
-**Ejecutar tests:**
+### Ejecutar tests
 
 ```bash
-pnpm run test
-# o
-npm run test
+npm test
 ```
 
 ---
-### 5. Filtros / Vector Search
-Elige entre la opción 5A o 5B y realiza solo una de las dos.
 
-#### 5A - Filtro de usuarios
+## Tareas completadas
 
-Crea un buscador de usuarios y un filtro que distinga entre usuarios que tienen parcelas y los que no.
+### ✅ Tarea 1 — Script de seed
 
-- Implementa un buscador en la ruta `/users` que permita buscar por `nombre` y `email`.
-- Añade un filtro en la misma ruta para mostrar únicamente los usuarios que tienen parcelas asociadas o los que no tienen ninguna.
+Script completo que puebla la base de datos con:
 
-**Requisitos:**
+- 2 provincias, 9 municipios
+- 10 usuarios (7 con perfil de imagen, 3 sin perfil para probar el avatar de inicial)
+- 7 tipos de cultivo
+- 14 parcelas distribuidas entre los usuarios (con 0, 1, 2 y 3 parcelas por usuario)
+- 22 recintos geométricamente contenidos dentro de sus parcelas
+- 50 películas con embeddings vectoriales placeholder
 
-- El endpoint debe validar los parámetros de entrada.
-- Debes mostrar el número de parcelas que tiene cada usuario.
+Las geometrías de parcelas y recintos se insertan mediante raw queries usando `ST_GeomFromGeoJSON` de PostGIS. Los polígonos se diseñaron con [geojson.io](https://geojson.io).
 
-#### 5B - Vector search de películas (embeddings + búsqueda semántica)
+### ✅ Tarea 2 — Vista de listado de usuarios (`/users`)
 
-Crea una búsqueda semántica de películas usando embeddings y pgvector:
+- Listado de usuarios en formato de tarjetas
+- Muestra nombre, email y número de parcelas
+- El campo `password` nunca se obtiene de la base de datos — excluido explícitamente en el `select` de Prisma
+- Imagen de perfil mediante el componente `Image` de Next.js con avatar de inicial como fallback
+- Al hacer clic en una tarjeta, navega a `/user/:id`
 
-- Genera los embeddings de cada película de forma local usando [`@xenova/transformers`](https://www.npmjs.com/package/@xenova/transformers) (no dependas de APIs externas).
-- Inserta las películas y sus embeddings en la tabla `Movie` usando SQL raw y el tipo `vector` de pgvector ([raw queries en Prisma](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries)).
-- Crea un endpoint `/api/movie-search` que reciba un texto y devuelva el top N de películas más similares usando búsqueda vectorial (`embedding <=> query_vector`).
-- Implementa una vista `/movies` con un buscador: el usuario escribe una frase (por ejemplo, `a scary monster`) y se muestran las películas más relevantes según la búsqueda semántica.
-- Puedes revisar el `/src/types/xenova-transformers.d.ts` para guiarte un poco con la libreria `@xenova/transformers`
+**Bonus completado:** Modelo `Profile` con relación 1:1 con `Usuario`, incluyendo campo de imagen renderizado con el componente `Image` de Next.js.
 
-**Requisitos:**
+### ✅ Tarea 3 — Vista de mapa con parcelas y recintos (`/user/:id`)
 
-- El endpoint debe validar los parámetros de entrada.
-- El buscador debe mostrar el título, descripción y el score de similitud de cada resultado.
+- Mapa interactivo con React Leaflet y tiles de OpenStreetMap
+- Parcelas renderizadas como polígonos verdes
+- Recintos renderizados como polígonos ámbar dentro de sus parcelas
+- Tooltip al hacer hover con información de la base de datos:
+  - Parcela: municipio, provincia, número de recintos
+  - Recinto: cultivo, fecha de siembra, fecha de cosecha
+- Popup al hacer clic en una parcela con opciones de gestión
 
-**Enlaces útiles:**
-- [Documentación de pgvector](https://github.com/pgvector/pgvector)
-- [Ejemplo de embeddings locales con Xenova](https://github.com/xenova/transformers.js)
+### ✅ Tarea 4 — Tests con Jest
 
+10 tests implementados cubriendo:
 
+- Renderizado correcto de datos de usuario en las tarjetas
+- Renderizado de imagen de perfil con texto alternativo correcto
+- Avatar de inicial cuando no hay imagen de perfil
+- Ausencia de datos sensibles (password) en el UI
+- Lógica singular/plural para el conteo de parcelas
+- Navegación correcta al hacer clic en una tarjeta
+- Renderizado de usuarios iniciales en el componente de búsqueda
+- Presencia de input de búsqueda y botones de filtro
+- Conteo correcto de resultados
 
----
+### ✅ Tarea 5A — Búsqueda y filtro de usuarios
 
-## 📊 Modelo de datos
-
-```
-Provincia (1) ──── (N) Municipio
-                         │
-                         │ (1)
-                         ▼
-Usuario (1) ──── (N) Parcela (1) ──── (N) Recinto (N) ──── (1) Cultivo
-```
-
-- **Provincia:** id, nombre
-- **Municipio:** id, nombre, provinciaId
-- **Usuario:** id, nombre, email, password
-- **Parcela:** id, geom (Polygon), usuarioId, municipioId
-- **Recinto:** id, geom (Polygon), parcelaId, cultivoId, fechaSiembra, fechaCosecha
-- **Cultivo:** id, nombre
-
----
-
-## 🛠️ Tecnologías
-
-- **Framework:** Next.js 16
-- **ORM:** Prisma 7
-- **Base de datos:** PostgreSQL 18 + PostGIS 3.6
-- **Mapas:** Leaflet / react-leaflet
-- **Estilos:** CSS Modules / SCSS / Tailwind
+- Buscador en `/users` por nombre y email
+- Filtro para mostrar todos los usuarios, solo los que tienen parcelas, o solo los que no tienen
+- Debouncing de 500ms en el input de búsqueda para minimizar peticiones al servidor
+- Endpoint `GET /api/usuarios` con validación de parámetros de entrada:
+  - `search`: string opcional, máximo 100 caracteres
+  - `filter`: debe ser uno de `todos`, `con-parcelas`, `sin-parcelas` — devuelve 400 si no es válido
 
 ---
 
-## ⌨️ Comandos útiles
+## CRUD de parcelas
 
-### Prisma
+Funcionalidad adicional implementada más allá de las tareas requeridas:
 
-| Comando                          | Descripción                                                                                  |
-| -------------------------------- | --------------------------------------------------------------------------------------------- |
-| `pnpm run prisma:generate`     | Regenera el cliente de Prisma después de cambios en el schema                                |
-| `pnpm run prisma:migrate:dev`  | Crea y aplica una nueva migración en desarrollo                                              |
-| `pnpm run prisma:migrate:test` | Aplica migraciones en la base de datos de test                                                |
-| `pnpm run prisma:reset:dev`    | Resetea la base de datos de desarrollo (borra todos los datos y re-aplica migraciones + seed) |
-| `pnpm run prisma:reset:test`   | Resetea la base de datos de test                                                              |
+### Añadir parcela
 
-### Docker
+- Formulario para añadir nuevas parcelas a un usuario
+- El usuario pega la geometría en formato GeoJSON desde [geojson.io](https://geojson.io)
+- Selección de municipio existente mediante dropdown, o creación de uno nuevo introduciendo nombre y provincia
+- Validación del GeoJSON antes de insertar en la base de datos
+- Server Action de Next.js para la mutación, con `revalidatePath` para invalidar la caché tras la operación
 
-| Comando                    | Descripción                                                                     |
-| -------------------------- | -------------------------------------------------------------------------------- |
-| `docker compose up -d`   | Levanta los contenedores en segundo plano                                        |
-| `docker compose down`    | Para y elimina los contenedores                                                  |
-| `docker compose down -v` | Para los contenedores y elimina los volúmenes (borra datos de la base de datos) |
-| `docker compose logs -f` | Muestra los logs de los contenedores en tiempo real                              |
+### Eliminar parcela
 
-### Tests
-
-| Comando                         | Descripción                                                |
-| ------------------------------- | ----------------------------------------------------------- |
-| `pnpm run test`               | Ejecuta todos los tests                                     |
-| `pnpm run test -- --watch`    | Ejecuta tests en modo watch (re-ejecuta al guardar cambios) |
-| `pnpm run test -- --coverage` | Ejecuta tests y genera reporte de cobertura                 |
+- Botón de eliminación accesible desde el popup de cada parcela en el mapa
+- Panel de confirmación con scroll suave para evitar acciones accidentales
+- La eliminación en cascada borra primero los recintos asociados antes de eliminar la parcela (requerido por la constraint de clave foránea)
+- Verificación server-side de que la parcela pertenece al usuario antes de eliminar
 
 ---
 
-## 📚 Recursos útiles
+## Decisiones técnicas
 
-- [Documentación de Next.js](https://nextjs.org/docs)
-- [Documentación de Prisma](https://www.prisma.io/docs)
-- [Documentación de react-leaflet](https://react-leaflet.js.org/)
-- [Documentación de PostGIS](https://postgis.net/documentation/)
-- [Herramienta para crear GeoJSON](https://geojson.io/)
+### Arquitectura general
+
+Se ha utilizado el App Router de Next.js con Server Components por defecto para las páginas de datos, minimizando el JavaScript enviado al cliente. Los Client Components se limitan a los elementos interactivos: búsqueda, mapa, formulario de parcelas.
+
+### Datos geográficos
+
+Para las tablas con geometría (`Parcela` y `Recinto`), Prisma no soporta el tipo `geometry` de PostGIS de forma nativa. Se han utilizado raw queries con `ST_GeomFromGeoJSON` para inserciones y `ST_AsGeoJSON` para lecturas, manteniendo Prisma para el resto de operaciones CRUD.
+
+### Seguridad en datos sensibles
+
+El campo `password` de `Usuario` nunca se obtiene de la base de datos — se excluye explícitamente mediante el `select` de Prisma en todas las consultas. La protección está en la capa de acceso a datos, no solo en la UI.
+
+### Autenticación de Server Actions
+
+Las Server Actions de eliminación verifican que `usuarioId` del parámetro coincide con el propietario de la parcela antes de ejecutar el DELETE, previniendo que un usuario pueda eliminar parcelas ajenas.
+
+### Búsqueda: API vs filtrado client-side
+
+Se implementó la búsqueda mediante un endpoint API (`/api/usuarios`) para satisfacer el requisito de validación de parámetros. Para un dataset pequeño como este, el filtrado client-side de los datos ya cargados sería más eficiente — evitaría peticiones de red en cada keystroke incluso con debouncing. En una aplicación real la elección dependería del tamaño esperado del dataset y los requisitos de paginación.
+
+### Leaflet y SSR
+
+React Leaflet requiere APIs del navegador (`window`, `document`) y no puede renderizarse en el servidor. Se utiliza `next/dynamic` con `ssr: false` para importar el componente del mapa únicamente en el cliente. La separación en dos componentes (`MapView` y `Map`) mantiene el concern del SSR aislado de la lógica de renderizado del mapa.
+
+### Tailwind CSS v4
+
+Tailwind v4 escanea el código estáticamente para generar las clases CSS. Las clases utilizadas únicamente en componentes renderizados condicionalmente (como el panel de confirmación de eliminación) pueden no ser detectadas. Se resolvió añadiendo un archivo `src/safelist.txt` referenciado como `@source` en `globals.css`.
+
+### Asignación de municipio a parcelas
+
+La asignación de municipio es una selección manual del usuario, no una verificación geométrica automática. Una implementación en producción podría validar las coordenadas contra los datos de límites municipales oficiales del [SIGPAC](https://www.mapa.gob.es/es/agricultura/temas/sistema-de-informacion-geografica-de-parcelas-agricolas-sigpac-/) del Ministerio de Agricultura.
+
+### Caching
+
+No se implementó caching explícito en esta versión. En producción se utilizaría la directiva `use cache` de Next.js 16 con `cacheComponents` habilitado, aplicando límites de caché a nivel de función con perfiles `cacheLife` apropiados. La invalidación tras mutaciones utilizaría `revalidatePath`.
 
 ---
 
-## ✅ Criterios de evaluación
+## Mejoras futuras
 
-- Código limpio y bien estructurado
-- Uso correcto de TypeScript
-- Manejo adecuado de datos geoespaciales
-- Experiencia de usuario en la visualización del mapa
-- Bonus: Tests, manejo de errores, optimizaciones
+### Navegación entre parcelas
 
-¡Buena suerte! 🍀
+Actualmente el mapa se centra en la primera parcela del usuario. Una mejora significativa sería un panel de navegación con la lista de parcelas del usuario. Al hacer clic en una parcela, el mapa animaría suavemente hasta esa parcela usando `map.flyTo()` o `map.fitBounds()` de Leaflet, accediendo a la instancia del mapa mediante el hook `useMap()` de react-leaflet.
+
+### Dibujo interactivo de polígonos
+
+El formulario de añadir parcela actualmente requiere pegar GeoJSON manualmente desde una herramienta externa. Una mejora natural sería integrar `leaflet-draw` para permitir al usuario dibujar el polígono directamente sobre el mapa de la aplicación. Se optó por el enfoque actual para mantener el alcance dentro de los tiempos disponibles.
+
+### Verificación geométrica de municipio
+
+Validar que las coordenadas de una parcela pertenecen realmente al municipio seleccionado, usando datos de límites oficiales del SIGPAC con `ST_Within` de PostGIS.
+
+### Autenticación y roles
+
+Implementar autenticación con NextAuth.js o Clerk y un sistema de roles:
+
+- **Admin:** acceso completo, gestión de todos los usuarios y parcelas
+- **Usuario:** acceso solo a sus propias parcelas
+- Protección de rutas a nivel de middleware de Next.js
+
+### CRUD completo de recintos
+
+Actualmente los recintos solo se crean mediante el seed. Una extensión natural sería permitir añadir, editar y eliminar recintos desde la vista del mapa, respetando siempre el constraint `ST_Within` respecto a su parcela padre.
+
+### Embeddings reales para búsqueda semántica
+
+Los embeddings de películas se han insertado como vectores de ceros placeholder. Una implementación completa generaría embeddings reales usando `@xenova/transformers` localmente, habilitando búsqueda semántica genuina en la ruta `/movies` mediante `pgvector`.
+
+### Caching con `use cache`
+
+Migrar a la directiva `use cache` de Next.js 16 con `cacheComponents: true`, aplicando perfiles `cacheLife` granulares por tipo de dato y usando `revalidatePath` tras cada mutación para invalidación precisa.
+
+### Paginación
+
+Para datasets grandes, implementar paginación en el listado de usuarios y en la búsqueda, tanto en el endpoint API como en el componente de búsqueda.
+
+---
+
+## Notas sobre Git
+
+Se ha utilizado Git Flow como estrategia de branching:
+
+- `main` — código estable
+- `develop` — rama de integración
+- `feature/*` — una rama por funcionalidad
+- `fix/*` — correcciones puntuales
+
+Los mensajes de commit siguen el formato Conventional Commits (`feat:`, `fix:`, `chore:`, `test:`).
