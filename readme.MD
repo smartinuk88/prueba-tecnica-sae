@@ -31,8 +31,8 @@ Aplicación web desarrollada con Next.js que permite visualizar usuarios y sus p
 1. **Clonar el repositorio:**
 
 ```bash
-git clone <https://github.com/smartinuk88/prueba-tecnica-sae.git>
-cd <nombre-del-proyecto>
+git clone https://github.com/smartinuk88/prueba-tecnica-sae.git
+cd prueba-tecnica-sae
 ```
 
 2. **Configurar variables de entorno:**
