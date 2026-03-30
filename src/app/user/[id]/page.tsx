@@ -3,6 +3,7 @@ import { prisma } from "../../../../prisma/prisma_client";
 import MapView from "@/components/MapView";
 import Image from "next/image";
 import Link from "next/link";
+import ParcelaForm from "@/components/ParcelaForm";
 
 type ParcelaRaw = {
   id: number;
@@ -77,6 +78,28 @@ async function UserMapPage({ params }: Props) {
     )
   `;
 
+  const municipios = await prisma.municipio.findMany({
+    select: {
+      id: true,
+      nombre: true,
+      provincia: {
+        select: {
+          id: true,
+          nombre: true,
+        },
+      },
+    },
+    orderBy: { nombre: "asc" },
+  });
+
+  const provincias = await prisma.provincia.findMany({
+    select: {
+      id: true,
+      nombre: true,
+    },
+    orderBy: { nombre: "asc" },
+  });
+
   // Parse the GeoJSON strings into objects
   const parcelasWithGeom = parcelas.map((parcela) => ({
     ...parcela,
@@ -122,9 +145,18 @@ async function UserMapPage({ params }: Props) {
             {parcelasWithGeom.length === 1 ? "parcela" : "parcelas"}
           </p>
         </div>
-        <div className="rounded-xl overflow-hidden shadow-md border border-gray-200">
-          <MapView parcelas={parcelasWithGeom} recintos={recintosWithGeom} />
-        </div>
+
+        <MapView
+          parcelas={parcelasWithGeom}
+          recintos={recintosWithGeom}
+          usuarioId={usuario.id}
+        />
+
+        <ParcelaForm
+          usuarioId={usuario.id}
+          municipios={municipios}
+          provincias={provincias}
+        />
       </div>
     </main>
   );
