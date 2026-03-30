@@ -185,7 +185,7 @@ export type UsuarioGroupByOutputType = {
   _max: UsuarioMaxAggregateOutputType | null
 }
 
-type GetUsuarioGroupByPayload<T extends UsuarioGroupByArgs> = Prisma.PrismaPromise<
+export type GetUsuarioGroupByPayload<T extends UsuarioGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<UsuarioGroupByOutputType, T['by']> &
       {
@@ -209,6 +209,7 @@ export type UsuarioWhereInput = {
   email?: Prisma.StringFilter<"Usuario"> | string
   password?: Prisma.StringFilter<"Usuario"> | string
   parcelas?: Prisma.ParcelaListRelationFilter
+  profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
 }
 
 export type UsuarioOrderByWithRelationInput = {
@@ -217,6 +218,7 @@ export type UsuarioOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   parcelas?: Prisma.ParcelaOrderByRelationAggregateInput
+  profile?: Prisma.ProfileOrderByWithRelationInput
 }
 
 export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
@@ -228,6 +230,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   nombre?: Prisma.StringFilter<"Usuario"> | string
   password?: Prisma.StringFilter<"Usuario"> | string
   parcelas?: Prisma.ParcelaListRelationFilter
+  profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
 }, "id" | "email">
 
 export type UsuarioOrderByWithAggregationInput = {
@@ -257,6 +260,7 @@ export type UsuarioCreateInput = {
   email: string
   password: string
   parcelas?: Prisma.ParcelaCreateNestedManyWithoutUsuarioInput
+  profile?: Prisma.ProfileCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateInput = {
@@ -265,6 +269,7 @@ export type UsuarioUncheckedCreateInput = {
   email: string
   password: string
   parcelas?: Prisma.ParcelaUncheckedCreateNestedManyWithoutUsuarioInput
+  profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUpdateInput = {
@@ -272,6 +277,7 @@ export type UsuarioUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   parcelas?: Prisma.ParcelaUpdateManyWithoutUsuarioNestedInput
+  profile?: Prisma.ProfileUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateInput = {
@@ -280,6 +286,7 @@ export type UsuarioUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   parcelas?: Prisma.ParcelaUncheckedUpdateManyWithoutUsuarioNestedInput
+  profile?: Prisma.ProfileUncheckedUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateManyInput = {
@@ -344,10 +351,25 @@ export type UsuarioUpdateOneRequiredWithoutParcelasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutParcelasInput, Prisma.UsuarioUpdateWithoutParcelasInput>, Prisma.UsuarioUncheckedUpdateWithoutParcelasInput>
 }
 
+export type UsuarioCreateNestedOneWithoutProfileInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutProfileInput, Prisma.UsuarioUncheckedCreateWithoutProfileInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutProfileInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutProfileInput, Prisma.UsuarioUncheckedCreateWithoutProfileInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutProfileInput
+  upsert?: Prisma.UsuarioUpsertWithoutProfileInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutProfileInput, Prisma.UsuarioUpdateWithoutProfileInput>, Prisma.UsuarioUncheckedUpdateWithoutProfileInput>
+}
+
 export type UsuarioCreateWithoutParcelasInput = {
   nombre: string
   email: string
   password: string
+  profile?: Prisma.ProfileCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutParcelasInput = {
@@ -355,6 +377,7 @@ export type UsuarioUncheckedCreateWithoutParcelasInput = {
   nombre: string
   email: string
   password: string
+  profile?: Prisma.ProfileUncheckedCreateNestedOneWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutParcelasInput = {
@@ -377,6 +400,7 @@ export type UsuarioUpdateWithoutParcelasInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profile?: Prisma.ProfileUpdateOneWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutParcelasInput = {
@@ -384,6 +408,53 @@ export type UsuarioUncheckedUpdateWithoutParcelasInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
+  profile?: Prisma.ProfileUncheckedUpdateOneWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutProfileInput = {
+  nombre: string
+  email: string
+  password: string
+  parcelas?: Prisma.ParcelaCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutProfileInput = {
+  id?: number
+  nombre: string
+  email: string
+  password: string
+  parcelas?: Prisma.ParcelaUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutProfileInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutProfileInput, Prisma.UsuarioUncheckedCreateWithoutProfileInput>
+}
+
+export type UsuarioUpsertWithoutProfileInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutProfileInput, Prisma.UsuarioUncheckedUpdateWithoutProfileInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutProfileInput, Prisma.UsuarioUncheckedCreateWithoutProfileInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutProfileInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutProfileInput, Prisma.UsuarioUncheckedUpdateWithoutProfileInput>
+}
+
+export type UsuarioUpdateWithoutProfileInput = {
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  parcelas?: Prisma.ParcelaUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutProfileInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  parcelas?: Prisma.ParcelaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 
@@ -423,6 +494,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   email?: boolean
   password?: boolean
   parcelas?: boolean | Prisma.Usuario$parcelasArgs<ExtArgs>
+  profile?: boolean | Prisma.Usuario$profileArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
@@ -450,6 +522,7 @@ export type UsuarioSelectScalar = {
 export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "email" | "password", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parcelas?: boolean | Prisma.Usuario$parcelasArgs<ExtArgs>
+  profile?: boolean | Prisma.Usuario$profileArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UsuarioIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -459,6 +532,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Usuario"
   objects: {
     parcelas: Prisma.$ParcelaPayload<ExtArgs>[]
+    profile: Prisma.$ProfilePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -860,6 +934,7 @@ readonly fields: UsuarioFieldRefs;
 export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   parcelas<T extends Prisma.Usuario$parcelasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$parcelasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParcelaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  profile<T extends Prisma.Usuario$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$profileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1089,6 +1164,11 @@ export type UsuarioFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Usuarios.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Usuarios.
+   */
   distinct?: Prisma.UsuarioScalarFieldEnum | Prisma.UsuarioScalarFieldEnum[]
 }
 
@@ -1302,6 +1382,25 @@ export type Usuario$parcelasArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.ParcelaScalarFieldEnum | Prisma.ParcelaScalarFieldEnum[]
+}
+
+/**
+ * Usuario.profile
+ */
+export type Usuario$profileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Profile
+   */
+  select?: Prisma.ProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Profile
+   */
+  omit?: Prisma.ProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProfileInclude<ExtArgs> | null
+  where?: Prisma.ProfileWhereInput
 }
 
 /**

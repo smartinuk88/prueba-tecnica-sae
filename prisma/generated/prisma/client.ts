@@ -26,7 +26,9 @@ export * from "./enums.ts"
  * Type-safe database client for TypeScript
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more Provincias
  * const provincias = await prisma.provincia.findMany()
  * ```
@@ -67,3 +69,13 @@ export type Recinto = Prisma.RecintoModel
  * 
  */
 export type Cultivo = Prisma.CultivoModel
+/**
+ * Model Movie
+ * 
+ */
+export type Movie = Prisma.MovieModel
+/**
+ * Model Profile
+ * 
+ */
+export type Profile = Prisma.ProfileModel

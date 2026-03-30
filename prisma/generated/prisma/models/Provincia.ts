@@ -171,7 +171,7 @@ export type ProvinciaGroupByOutputType = {
   _max: ProvinciaMaxAggregateOutputType | null
 }
 
-type GetProvinciaGroupByPayload<T extends ProvinciaGroupByArgs> = Prisma.PrismaPromise<
+export type GetProvinciaGroupByPayload<T extends ProvinciaGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ProvinciaGroupByOutputType, T['by']> &
       {
@@ -1043,6 +1043,11 @@ export type ProvinciaFindManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Skip the first `n` Provincias.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Provincias.
+   */
   distinct?: Prisma.ProvinciaScalarFieldEnum | Prisma.ProvinciaScalarFieldEnum[]
 }
 

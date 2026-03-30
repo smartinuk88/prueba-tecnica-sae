@@ -39,6 +39,7 @@ model Usuario {
   email    String    @unique
   password String
   parcelas Parcela[]
+  profile  Profile?
 }
 
 model Parcela {
@@ -77,4 +78,11 @@ model Movie {
   title       String
   description String
   embedding   Unsupported("vector")
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  imagen    String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId Int     @unique
 }

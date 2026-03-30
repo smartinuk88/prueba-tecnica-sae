@@ -200,7 +200,7 @@ export type RecintoGroupByOutputType = {
   _max: RecintoMaxAggregateOutputType | null
 }
 
-type GetRecintoGroupByPayload<T extends RecintoGroupByArgs> = Prisma.PrismaPromise<
+export type GetRecintoGroupByPayload<T extends RecintoGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<RecintoGroupByOutputType, T['by']> &
       {
@@ -1084,6 +1084,11 @@ export type RecintoFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Recintos.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Recintos.
+   */
   distinct?: Prisma.RecintoScalarFieldEnum | Prisma.RecintoScalarFieldEnum[]
 }
 
