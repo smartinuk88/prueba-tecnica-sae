@@ -2,16 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import UsuarioCard from "./UsuarioCard";
+import { Usuario } from "@/types";
 
 type Filter = "todos" | "con-parcelas" | "sin-parcelas";
-
-type Usuario = {
-  id: number;
-  nombre: string;
-  email: string;
-  profile: { imagen: string } | null;
-  _count: { parcelas: number };
-};
 
 type Props = {
   initialUsuarios: Usuario[];

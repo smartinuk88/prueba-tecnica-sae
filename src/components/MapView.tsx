@@ -3,23 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState, useRef, useTransition } from "react";
 import { deleteParcela } from "@/app/actions/parcelas";
-
-type Parcela = {
-  id: number;
-  municipio: string;
-  provincia: string;
-  geom: GeoJSON.Polygon;
-  recintoCount?: number;
-};
-
-type Recinto = {
-  id: number;
-  parcelaId: number;
-  cultivo: string;
-  fechaSiembra: string | null;
-  fechaCosecha: string | null;
-  geom: GeoJSON.Polygon;
-};
+import { Parcela, Recinto } from "@/types";
 
 type Props = {
   parcelas: Parcela[];

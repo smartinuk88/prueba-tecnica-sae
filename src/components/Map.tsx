@@ -9,23 +9,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { LatLngExpression } from "leaflet";
-
-type Parcela = {
-  id: number;
-  municipio: string;
-  provincia: string;
-  geom: GeoJSON.Polygon;
-  recintoCount?: number;
-};
-
-type Recinto = {
-  id: number;
-  parcelaId: number;
-  cultivo: string;
-  fechaSiembra: string | null;
-  fechaCosecha: string | null;
-  geom: GeoJSON.Polygon;
-};
+import { Parcela, Recinto } from "@/types";
 
 type Props = {
   parcelas: Parcela[];
