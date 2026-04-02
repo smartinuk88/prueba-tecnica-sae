@@ -1,26 +1,10 @@
 export const revalidate = 60;
-import { prisma } from "../../../prisma/prisma_client";
+import { getUsuarios } from "@/lib/db/usuarios";
 import UsuarioSearch from "@/components/UsuarioSearch";
 
 async function UsersPage() {
-  const usuarios = await prisma.usuario.findMany({
-    select: {
-      id: true,
-      nombre: true,
-      email: true,
-      profile: {
-        select: {
-          imagen: true,
-        },
-      },
-      _count: {
-        select: { parcelas: true },
-      },
-    },
-    orderBy: {
-      nombre: "asc",
-    },
-  });
+  const usuarios = await getUsuarios();
+
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-4xl mx-auto">
