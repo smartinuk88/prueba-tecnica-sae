@@ -2,20 +2,7 @@
 
 import { useState, useTransition, useRef } from "react";
 import { addParcela } from "@/app/actions/parcelas";
-
-type Municipio = {
-  id: number;
-  nombre: string;
-  provincia: {
-    id: number;
-    nombre: string;
-  };
-};
-
-type Provincia = {
-  id: number;
-  nombre: string;
-};
+import { Municipio, Provincia } from "@/types";
 
 type Props = {
   usuarioId: number;

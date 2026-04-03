@@ -208,13 +208,33 @@ La asignación de municipio es una selección manual del usuario, no una verific
 
 No se implementó caching explícito en esta versión. En producción se utilizaría la directiva `use cache` de Next.js 16 con `cacheComponents` habilitado, aplicando límites de caché a nivel de función con perfiles `cacheLife` apropiados. La invalidación tras mutaciones utilizaría `revalidatePath`.
 
+### Estado de búsqueda basado en URL
+
+El estado de búsqueda y filtro se gestiona mediante URL search params (`useSearchParams` de Next.js) en lugar de estado local de React. Esto permite compartir resultados filtrados mediante la URL, persistir el estado al recargar la página, y que el botón atrás del navegador funcione correctamente. La URL actúa como única fuente de verdad para el estado del filtro.
+
+### Separación de tipos y queries
+
+Los tipos compartidos se centralizan en `/src/types/index.ts` y las queries de base de datos en `/src/lib/db/`, separando claramente las responsabilidades. La capa de datos devuelve tipos ya transformados y listos para usar — las páginas no necesitan conocer los detalles internos de cómo se almacenan los datos.
+
+### Navegación entre parcelas con FlyToHandler
+
+La navegación entre parcelas utiliza el hook `useMap()` de react-leaflet dentro de un componente renderless `FlyToHandler`. Este componente vive dentro de `MapContainer` — el único lugar donde `useMap()` puede llamarse — y reacciona a cambios en `selectedParcela` animando el mapa con `map.flyTo()`. Es un patrón común para operaciones programáticas sobre el mapa sin acoplar la lógica al componente principal.
+
+---
+
+## Cambios post-revisión
+
+Tras la revisión técnica, se implementaron las siguientes mejoras:
+
+- **Tipos centralizados** — los tipos compartidos se extrajeron a `/src/types/index.ts` eliminando definiciones duplicadas en múltiples componentes
+- **Queries extraídas** — las consultas a la base de datos se movieron a `/src/lib/db/` separando la lógica de acceso a datos de las páginas
+- **Estado de búsqueda en URL** — el estado de búsqueda y filtro migró de `useState` a URL search params, haciendo los resultados compartibles y persistentes
+- **Navegación entre parcelas** — implementada mediante `FlyToHandler` y `useMap()` de react-leaflet, permitiendo centrar el mapa en cualquier parcela con animación suave
+- **Hash de contraseñas** — las contraseñas del seed se hashean con bcrypt en lugar de almacenarse en texto plano
+
 ---
 
 ## Mejoras futuras
-
-### Navegación entre parcelas
-
-Actualmente el mapa se centra en la primera parcela del usuario. Una mejora significativa sería un panel de navegación con la lista de parcelas del usuario. Al hacer clic en una parcela, el mapa animaría suavemente hasta esa parcela usando `map.flyTo()` o `map.fitBounds()` de Leaflet, accediendo a la instancia del mapa mediante el hook `useMap()` de react-leaflet.
 
 ### Dibujo interactivo de polígonos
 

@@ -2,65 +2,79 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import UsuarioCard from "./UsuarioCard";
+import { Usuario } from "@/types";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Filter = "todos" | "con-parcelas" | "sin-parcelas";
-
-type Usuario = {
-  id: number;
-  nombre: string;
-  email: string;
-  profile: { imagen: string } | null;
-  _count: { parcelas: number };
-};
 
 type Props = {
   initialUsuarios: Usuario[];
 };
 
+const fetchUsuarios = async (queryString: string): Promise<Usuario[]> => {
+  const res = await fetch(`/api/usuarios?${queryString}`);
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error ?? "Error fetching usuarios");
+  }
+  return res.json();
+};
+
 function UsuarioSearch({ initialUsuarios }: Props) {
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<Filter>("todos");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const initialSearch = searchParams.get("search") ?? "";
+  const initialFilter = (searchParams.get("filter") as Filter) ?? "todos";
+
+  const [search, setSearch] = useState(initialSearch);
+  const [filter, setFilter] = useState<Filter>(initialFilter);
   const [usuarios, setUsuarios] = useState<Usuario[]>(initialUsuarios);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const fetchUsuarios = useCallback(
-    async (searchValue: string, filterValue: Filter) => {
-      setLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (searchValue) params.set("search", searchValue);
-        if (filterValue !== "todos") params.set("filter", filterValue);
+  //Update URL when search or filter changes
+  const updateUrl = useCallback(
+    (searchValue: string, filterValue: Filter) => {
+      const params = new URLSearchParams();
+      if (searchValue) params.set("search", searchValue);
+      if (filterValue !== "todos") params.set("filter", filterValue);
 
-        const res = await fetch(`/api/usuarios?${params.toString()}`);
-        const data = await res.json();
-
-        if (res.ok) {
-          setUsuarios(data);
-        } else {
-          console.error("API error:", data.error);
-        }
-      } catch (error) {
-        console.error("Fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
+      const queryString = params.toString();
+      router.replace(queryString ? `/users?${queryString}` : "/users");
     },
-    [],
+    [router],
   );
 
-  // Debounced search — waits 500ms after user stops typing
+  // Debounced URL update — waits 500ms after user stops typing
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
-      fetchUsuarios(search, filter);
+      updateUrl(search, filter);
     }, 500);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [search, filter, fetchUsuarios]);
+  }, [search, filter, updateUrl]);
+
+  // Fetch when URL params change
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchUsuarios(searchParams.toString());
+        setUsuarios(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [searchParams]);
 
   const filterButtons: { label: string; value: Filter }[] = [
     { label: "Todos", value: "todos" },
@@ -86,7 +100,10 @@ function UsuarioSearch({ initialUsuarios }: Props) {
         {filterButtons.map((btn) => (
           <button
             key={btn.value}
-            onClick={() => setFilter(btn.value)}
+            onClick={() => {
+              setFilter(btn.value);
+              updateUrl(search, btn.value);
+            }}
             className={`px-4 py-2 rounded-full cursor-pointer text-sm font-medium transition-all duration-200 ${
               filter === btn.value
                 ? "bg-green-600 text-white shadow-sm"
