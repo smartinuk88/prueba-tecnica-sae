@@ -1,5 +1,6 @@
 // Este archivo contendrá el script que hará el seed de la base de datos
 import { prisma } from "../prisma_client";
+import bcrypt from "bcrypt";
 
 const movies = [
   {
@@ -237,6 +238,8 @@ async function main() {
    *  las opciones de CRUD en la documentación oficial de prisma: https://www.prisma.io/docs/orm/prisma-client/queries/crud
    */
 
+  const hashedPassword = await bcrypt.hash("Password123!", 10);
+
   // 1. PROVINCIAS
   await prisma.provincia.createMany({
     data: [{ nombre: "Murcia" }, { nombre: "Alicante" }],
@@ -277,52 +280,52 @@ async function main() {
       {
         nombre: "Carlos García",
         email: "carlos@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "María López",
         email: "maria@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Pedro Martínez",
         email: "pedro@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "María Saez",
         email: "marias@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Luis Fernández",
         email: "luis@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Laura Torres",
         email: "laura@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Scott Martin",
         email: "scott@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Elena Ruiz",
         email: "elena@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Miguel Herrera",
         email: "miguel@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
       {
         nombre: "Carmen Jiménez",
         email: "carmen@example.com",
-        password: "hashed_password",
+        password: hashedPassword,
       },
     ],
   });
