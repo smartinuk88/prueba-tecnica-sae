@@ -6,15 +6,18 @@ import {
   Polygon,
   Tooltip,
   Popup,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { LatLngExpression } from "leaflet";
 import { Parcela, Recinto } from "@/types";
+import { useEffect } from "react";
 
 type Props = {
   parcelas: Parcela[];
   recintos: Recinto[];
   onDeleteRequest: (parcela: Parcela) => void;
+  selectedParcela: Parcela | null;
 };
 
 // GeoJSON coordinates are [lng, lat] but Leaflet expects [lat, lng]
@@ -36,7 +39,25 @@ function getCentre(parcelas: Parcela[]): LatLngExpression {
   return [avgLat, avgLng];
 }
 
-function Map({ parcelas, recintos, onDeleteRequest }: Props) {
+function FlyToHandler({ parcela }: { parcela: Parcela | null }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!parcela) return;
+
+    const coords = parcela.geom.coordinates[0];
+    const lats = coords.map(([, lat]) => lat);
+    const lngs = coords.map(([lng]) => lng);
+    const avgLat = lats.reduce((sum, lat) => sum + lat, 0) / lats.length;
+    const avgLng = lngs.reduce((sum, lng) => sum + lng, 0) / lngs.length;
+
+    map.flyTo([avgLat, avgLng], 14, { animate: true, duration: 1 });
+  }, [parcela, map]);
+
+  return null;
+}
+
+function Map({ parcelas, recintos, onDeleteRequest, selectedParcela }: Props) {
   const centre = getCentre(parcelas);
 
   return (
@@ -50,6 +71,8 @@ function Map({ parcelas, recintos, onDeleteRequest }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+        <FlyToHandler parcela={selectedParcela} />
 
         {/* Parcelas — green polygons */}
         {parcelas.map((parcela) => (
