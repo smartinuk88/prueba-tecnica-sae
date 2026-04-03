@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useState, useRef, useTransition } from "react";
 import { deleteParcela } from "@/app/actions/parcelas";
 import { Parcela, Recinto } from "@/types";
+import ParcelaList from "./ParcelaList";
 
 type Props = {
   parcelas: Parcela[];
@@ -17,6 +18,7 @@ const Map = dynamic<{
   recintos: Recinto[];
   usuarioId: number;
   onDeleteRequest: (parcela: Parcela) => void;
+  selectedParcela: Parcela | null;
 }>(() => import("./Map"), {
   ssr: false,
   loading: () => (
@@ -27,12 +29,15 @@ const Map = dynamic<{
 });
 
 function MapView({ parcelas, recintos, usuarioId }: Props) {
-  const [selectedParcela, setSelectedParcela] = useState<Parcela | null>(null);
+  const [selectedParcela, setSelectedParcela] = useState<Parcela | null>(
+    parcelas.length > 0 ? parcelas[0] : null,
+  );
+  const [confirmParcela, setConfirmParcela] = useState<Parcela | null>(null);
   const [isPending, startTransition] = useTransition();
   const confirmRef = useRef<HTMLDivElement>(null);
 
   const handleDeleteRequest = (parcela: Parcela) => {
-    setSelectedParcela(parcela);
+    setConfirmParcela(parcela);
     setTimeout(() => {
       confirmRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -46,7 +51,7 @@ function MapView({ parcelas, recintos, usuarioId }: Props) {
     startTransition(async () => {
       const result = await deleteParcela(selectedParcela.id, usuarioId);
       if (result.success) {
-        setSelectedParcela(null);
+        setConfirmParcela(null);
       } else {
         console.error(result.error);
       }
@@ -61,23 +66,29 @@ function MapView({ parcelas, recintos, usuarioId }: Props) {
 
   return (
     <div>
+      <ParcelaList
+        parcelas={parcelasEnriched}
+        selectedParcela={selectedParcela}
+        onSelect={setSelectedParcela}
+      />
       <div className="rounded-xl overflow-hidden shadow-md border border-gray-200 mb-4">
         <Map
           parcelas={parcelasEnriched}
           recintos={recintos}
           usuarioId={usuarioId}
           onDeleteRequest={handleDeleteRequest}
+          selectedParcela={selectedParcela}
         />
       </div>
 
       {/* Delete confirmation panel */}
-      {selectedParcela && (
+      {confirmParcela && (
         <div
           ref={confirmRef}
           className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl"
         >
           <p className="text-sm font-semibold text-red-700 mb-1">
-            ¿Eliminar Parcela {selectedParcela.id}?
+            ¿Eliminar Parcela {confirmParcela.id}?
           </p>
           <p className="text-xs text-red-600 mb-4">
             Se eliminarán también todos sus recintos asociados. Esta acción no
@@ -92,7 +103,7 @@ function MapView({ parcelas, recintos, usuarioId }: Props) {
               {isPending ? "Eliminando..." : "Confirmar eliminación"}
             </button>
             <button
-              onClick={() => setSelectedParcela(null)}
+              onClick={() => setConfirmParcela(null)}
               className="px-4 py-2 bg-white text-gray-600 border border-gray-200 rounded-lg text-sm font-medium hover:border-gray-400 cursor-pointer"
             >
               Cancelar
