@@ -2,8 +2,13 @@ export const revalidate = 60;
 import { getUsuarios } from "@/lib/db/usuarios";
 import UsuarioSearch from "@/components/UsuarioSearch";
 
-async function UsersPage() {
-  const usuarios = await getUsuarios();
+type Props = {
+  searchParams: Promise<{ search?: string; filter?: string }>;
+};
+
+async function UsersPage({ searchParams }: Props) {
+  const { search, filter } = await searchParams;
+  const usuarios = await getUsuarios(search, filter);
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-6">
