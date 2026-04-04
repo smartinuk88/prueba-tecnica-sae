@@ -210,7 +210,7 @@ No se implementó caching explícito en esta versión. En producción se utiliza
 
 ### Estado de búsqueda basado en URL
 
-El estado de búsqueda y filtro se gestiona mediante URL search params (`useSearchParams` de Next.js) en lugar de estado local de React. Esto permite compartir resultados filtrados mediante la URL, persistir el estado al recargar la página, y que el botón atrás del navegador funcione correctamente. La URL actúa como única fuente de verdad para el estado del filtro.
+El estado de búsqueda y filtro se gestiona mediante URL search params. `page.tsx` lee los params en el servidor y pasa los datos ya filtrados a `UsuarioSearch` como `initialUsuarios` — eliminando la doble petición que ocurriría si el filtrado se hiciera únicamente en el cliente. Los cambios posteriores del usuario siguen usando el endpoint `/api/usuarios` para actualizaciones dinámicas.
 
 ### Separación de tipos y queries
 
